@@ -107,6 +107,7 @@ func (s *backendSyncer) ensureBackendService(sp utils.ServicePort) error {
 	}
 
 	needUpdate := ensureProtocol(be, sp)
+	needUpdate = ensureTimeout(be, sp)
 	needUpdate = ensureHealthCheckLink(be, hcLink) || needUpdate
 	needUpdate = ensureDescription(be, &sp) || needUpdate
 	if s.backendConfigEnabled && sp.BackendConfig != nil {
@@ -200,6 +201,18 @@ func ensureProtocol(be *composite.BackendService, p utils.ServicePort) (needsUpd
 		return false
 	}
 	be.Protocol = string(p.Protocol)
+	return true
+}
+
+// ensureProtocol updates the BackendService Timeout with the expected value
+func ensureTimeout(be *composite.BackendService, p utils.ServicePort) (needsUpdate bool) {
+	if p.BackendConfig.Spec.Connection == nil {
+		return false
+	}
+	if be.TimeoutSec == p.BackendConfig.Spec.Connection.Timeout {
+		return false
+	}
+	be.TimeoutSec = p.BackendConfig.Spec.Connection.Timeout
 	return true
 }
 

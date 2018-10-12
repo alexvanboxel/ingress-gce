@@ -39,6 +39,7 @@ type BackendConfigSpec struct {
 	Iap            *IAPConfig            `json:"iap,omitempty"`
 	Cdn            *CDNConfig            `json:"cdn,omitempty"`
 	SecurityPolicy *SecurityPolicyConfig `json:"securityPolicy,omitempty"`
+	Connection     *ConnectionConfig     `json:"connection,omitempty"`
 }
 
 // BackendConfigStatus is the status for a BackendConfig resource
@@ -106,4 +107,9 @@ type CacheKeyPolicy struct {
 type SecurityPolicyConfig struct {
 	// Name of the security policy that should be associated.
 	Name string `json:"name"`
+}
+
+// ConnectionConfig contains configuration the timeout for the backends.
+type ConnectionConfig struct {
+	Timeout int64 `json:"timeout,omitempty"`
 }
